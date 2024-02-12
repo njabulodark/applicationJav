@@ -73,7 +73,8 @@ public class Uj {
         options.setExperimentalOption("prefs", prefs);
 
         this.driver = new ChromeDriver(options);
-        this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+        // make driver wait for 2 seconds before executing another instruction
+        this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         this.driver.get("https://registration.uj.ac.za/pls/prodi41/gen.gw1pkg.gw1startup?x_processcode=ITS_OAP"); 
         System.out.println(this.driver.getTitle());
         
@@ -450,6 +451,9 @@ public class Uj {
                 
                 // select academic year
                 c.selectElement("xpath", "//*[@id=\"oapAcademicYear\"]", data.getString("applicationYear"));
+                c.selectElement("xpath", "//*[@id=\"oapAcademicYear\"]", data.getString("applicationYear"));
+                c.selectElement("xpath", "//*[@id=\"oapAcademicYear\"]", data.getString("applicationYear"));
+                c.clickXpath("//*[@id=\"oapAcademicYear\"]");
                 // select course type //////// to be changed
                 c.selectElement("xpath", "//*[@id=\"oapECSLP\"]", "Short Learning Programs (SLP)");
                 // select faculty /////////////////////////////////////////////////////////////////
@@ -481,6 +485,9 @@ public class Uj {
                 this.driver.navigate().refresh();
                 c.selectElement("xpath", "//*[@id=\"oapAcademicYear\"]", data.getString("applicationYear"));
                 c.clickId("ITS_OAP");
+                // select academic year
+                c.selectElement("xpath", "//*[@id=\"oapAcademicYear\"]", data.getString("applicationYear"));
+                c.clickXpath("//*[@id=\"oapAcademicYear\"]");
 
                 // select course type //////// to be changed
                 c.selectElement("xpath", "//*[@id=\"oapECSLP\"]", "Short Learning Programs (SLP)");

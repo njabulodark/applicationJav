@@ -30,6 +30,8 @@ import java.io.FileReader;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
+// import Timeunit
+import java.util.concurrent.TimeUnit;
 
 public class Components {
     private WebDriver driver;
@@ -38,6 +40,10 @@ public class Components {
     public Components(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(this.driver, Duration.ofSeconds(20));
+
+        // make driver wait for 2 seconds before executing another instruction
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+
     }
 
     public String closest(WebElement select, String value) {
@@ -90,11 +96,19 @@ public class Components {
 
     public void clickXpath(String key) {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(key)));
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(key))).click();
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(key))).click();
+        } catch (Exception e) {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(key))).click();
+        }
     }
 
     public void clickId(String key) {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id(key))).click();
+    }
+    
+    public String getTextXpath(String key) {
+        return wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(key))).getText();
     }
 
     public void clickImageUj(String key, String search) {

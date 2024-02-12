@@ -3,10 +3,17 @@ package application;
 import application.Universities.Cao;
 // import application.Universities.Nwu;
 import application.Universities.Uj;
+import application.Universities.Uct;
 import application.Universities.Uwc;
+import application.Universities.Ufs;
+import application.Universities.Flight;
 
 public class Main {
     public static void main(String[] args) {
+        
+        // Uct uct= new Uct();
+        // uct.run();
+
         String processName = "chrome.exe";
 
         try {
@@ -26,8 +33,14 @@ public class Main {
             e.printStackTrace();
         }
 
-        Uwc uwc = new Uwc();
-        uwc.run();
+        Flight flight = new Flight();
+        flight.run();
+
+        // Ufs ufs = new Ufs();
+        // ufs.run();
+
+        // Uwc uwc = new Uwc();
+        // uwc.run();
 
         // Cao cao = new Cao();
         // cao.run();
@@ -38,7 +51,7 @@ public class Main {
         // boolean control = true;
         // while (control) {
         //     try {
-        //         String processName = "chrome.exe";
+        //         // String processName = "chrome.exe";
 
         //         try {
         //             // Execute the taskkill command to terminate the specified process

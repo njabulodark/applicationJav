@@ -1,13 +1,5 @@
 package application;
 
-import application.Universities.Cao;
-// import application.Universities.Nwu;
-import application.Universities.Uj;
-import application.Universities.Uct;
-import application.Universities.Uwc;
-import application.Universities.Ufs;
-import application.Universities.Flight;
-
 public class Main {
     public static void main(String[] args) {
         

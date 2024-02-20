@@ -1,0 +1,213 @@
+const express = require('express');
+const mysql = require('mysql');
+const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const bcrypt = require('bcrypt');
+const { exec } = require('child_process');
+
+
+const app = express();
+app.use(cors()); 
+
+app.use(express.json({limit: '50mb'}));
+
+// Enable CORS (Cross-Origin Resource Sharing) for all routes
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.header('Access-Control-Allow-Credentials', true);
+    next();
+  });
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'users'
+});
+
+
+app.get('/api/design', (req, res) => {
+    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) NOT NULL, av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json)", (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+            }
+        });
+});
+
+
+// Command to execute
+const command = 'c: && cd "c:\\Users\\njabulo\\Documents\\code\\Aviation" && .\\gradlew run';
+
+// Function to run the command and keep it running
+function runCommand() {
+    exec(command, (err, stdout, stderr) => {
+        if (err) {
+            console.error('Error executing command:', err);
+            return;
+        }
+        console.log('Command output:', stdout);
+    });
+}
+
+// Route to trigger the command execution
+app.get('/api/terminal', (req, res) => {
+    runCommand();
+    res.send('Command started');
+});
+
+
+// get
+app.get('/api/get', (req, res) => {
+    db.query("SELECT * FROM aviation", (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+}
+);
+
+app.post('/api/account', (req, res) => {
+    const {id} = req.body;
+    const sql = 'SELECT av_username, av_password, bet_amount, x_amount FROM aviation WHERE id = ?';
+    db.query(sql, [id], async (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+}
+);
+
+
+// add odds
+app.post('/api/oddslist', async (req, res) => {
+    try {
+        let data = req.body;
+        const sql = `Update aviation SET oddsList = ? WHERE id = '5'`;
+        data = JSON.stringify(data);
+        db.query(sql, [data], (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                return res.json({ success: true, userResult });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// get odds
+app.post('/api/getOdds', async (req, res) => {
+    try {
+        const sql = `SELECT oddsList FROM aviation WHERE id = '5'`;
+        db.query(sql, (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                return res.json({ success: true, userResult });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// add user using post request
+app.post('/api/add', async (req, res) => {
+    const data = req.body;
+    const sql = `Update aviation SET oddsList = ? WHERE id = '5'`;
+    db.query(sql, value, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            return res.json({ success: true, result });
+            
+        }
+    });
+
+});
+ 
+// register
+// login
+app.post('/api/login', async (req, res) => {
+    const { username, password} = req.body;
+
+    const sql = 'SELECT id, password FROM aviation WHERE username = ?';
+
+    db.query(sql, [username], async (err, result)=> {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error: 'Internal Server Error' })
+        } else {
+            if (result.length >0){
+                const passwordMatch = await bcrypt.compare(password, result[0].password);
+
+                if (passwordMatch) {
+                    const userId = result[0].id
+                    return res.json({ userId });
+                } else {
+                    return res.json({messag: "Invalid password"})
+                }
+            } else {
+                return res.json({messag: "The combination of username and password do not match"})
+            }
+        }
+    });
+});
+
+// update user subjects based on given data
+app.post("/api/keys", (req, res) => {
+    const data = req.body;
+    // console.log(values);
+    var instructions = "";
+    const keys = Object.keys(data);
+    const valus = Object.values(data);
+
+    var value = []
+
+    for (let i =0; i<Object.keys(data).length; i++){
+        if (valus[i] !== "" && keys[i] !== "id" ) {
+            instructions += `${keys[i]} = ?, `;
+            value.push(valus[i]);
+        } 
+    }
+
+    instructions = instructions.substring(0, instructions.length-2);
+    value.push(data["id"]);
+
+    console.log(data);
+
+    const sql = `Update aviation SET ${instructions} WHERE id = ?`;
+    db.query(sql, value, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            return res.json({ success: true, result });
+            
+        }
+    });
+
+});
+
+app.get('/api/', (req, res) => {
+    return res.json("from backend");
+});
+
+app.listen(8081, () => {
+    console.log("listening");
+});

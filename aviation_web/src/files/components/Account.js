@@ -52,13 +52,31 @@ const Section = styled.section`
 
 export default function Account() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [cashout, setCashout] = useState('');
+    const [ username, setUsername] = useState('');
+    const [ password, setPassword] = useState('');
+    const [ cashout, setCashout] = useState('');
     const [ x_amount, setXAmount] = useState('');
     const [ userMessage, setUserMessage] = useState('');
     const [ nextSet, setNextSet] = useState(false);
     const [ odds, setOdds] = useState([1.2,2.4,3.1,3.5,4.19,54.0,55.2]);
+    const [ betting, setBetting] = useState(false);
+    const [ balance, setBalance] = useState(0)
+
+    function timed(){
+        // wait 15 seconds
+        setTimeout(async () => {
+            await axios.post("http://localhost:8081/api/balance", {"id": localStorage.getItem("userId")})
+            .then((response) => {
+                if (response.data.userResult) {
+                    setBalance(response.data.userResult[0].balance);
+                    console.log("balance", response.data.userResult[0].balance);
+                }
+            });
+        }, 3000);
+
+    }
+
+    timed();
     
 
     const subUserName = async (e) => {
@@ -100,6 +118,11 @@ export default function Account() {
     const submition = async (e) => {
         e.preventDefault();
         const response = await axios.get("http://localhost:8081/api/terminal");
+
+        // wait 15 seconds
+        setTimeout(() => {
+            setBetting(true);
+        }, 15000);
     }
 
     const getOdds = async (e) => {
@@ -110,13 +133,10 @@ export default function Account() {
                     setOdds(response.data.userResult);
                 }
             });
-
     }
 
     useEffect(() => {
         document.title = "Account";
-
-        // console.log("ID: ",localStorage.getItem("userId"))
 
         const getAccount = async () => {
             await axios.post("http://localhost:8081/api/account", {"id": localStorage.getItem("userId")})
@@ -155,7 +175,7 @@ export default function Account() {
         <header className="py-5 bg-dark" >
         </header>
 
-        <section className="background-radial-gradient overflow-hidden">
+        <section className="background-radial-gradient overflow-hidden mt-4">
 
         <div className="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
             <div className="row gx-lg-5 align-items-center mb-5">
@@ -247,59 +267,15 @@ export default function Account() {
                             </button>
                         </div>
                     </div>
-
-                    <div className="form-outline mb-2">
-                        <label className="form-label px-3" htmlFor="cashout">Cashout Amount: </label>
-                        <input type="text" id="cashout" className="sr-only"  value={x_amount} onChange={(e)=>{ setXAmount(e.target.value)}} required/>
-                        <button type="submit" className="btn btn-primary px-1 py-1 mx-2 btn-sm btn-block" onClick={subXAmount}>
-                            save
-                        </button>
-                    </div>
-
-                    <button type="submit" className="btn btn-primary btn-block text-lg" onClick={submition}>
-                    Place Bet
-                    </button>
-                    </form>
-                    <div className="form-row">
-                        <button type="submit" className="btn btn-primary btn-block text-lg" onClick={getOdds}>
-                        Get Odds now
-                        </button>
                     {
-                        
-                        // Display odds list makeing the first item h1, second item h2, third item h3, and so on
-                        odds.map((odd, index) => {
-                            if (index === 0) {
-                                return <h1 key={index}>{odd}</h1>
-                            } else if (index === 1) {
-                                return <h2 key={index}>{odd}</h2>
-                            } else if (index === 2) {
-                                return <h3 key={index}>{odd}</h3>
-                            } else {
-                                return <p key={index}>{odd}</p>
-                            }
-                        })
+                        // scrum
+                        // linear
+                        // njabulo
+                        // apply for founder 
+                        // tsepang
+
+
                     }
-                    </div>
-                </div>
-                </div>}
-
-
-                {/* {nextSet && localStorage.getItem("userId") && <div className="card bg-glass">
-                <div className="card-body px-4 py-5 px-md-5">
-                    <h2 className='m-3 col-auto text-md-center'> Betting Setting</h2>
-                    <hr />
-                    <form>
-
-                    <div className="form-row">
-                        {userMessage && <div className="alert alert-success" role="alert">{userMessage}</div>}
-                        <div className="form-outline mb-4">
-                            <label className="form-label px-3" htmlFor="bet">Bet Amount: </label>
-                            <input type="text" id="bet"  className='sr-only pb-2 mb-2' value={cashout} onChange={(e)=>{ setCashout(e.target.value)}} required/>
-                            <button type="submit" className="btn btn-primary px-1 py-1 mx-2 btn-sm btn-block" onClick={subCashout}>
-                                save
-                            </button>
-                        </div>
-                    </div>
 
                     <div className="form-outline mb-2">
                         <label className="form-label px-3" htmlFor="cashout">Cashout Amount: </label>
@@ -308,13 +284,51 @@ export default function Account() {
                             save
                         </button>
                     </div>
-
-                    <button type="submit" className="btn btn-primary btn-block text-lg" onClick={submition}>
-                    Place Bet
-                    </button>
+                    <div class="col-md-6 mx-auto text-center">
+                        <button type="submit" className="btn btn-primary btn-block text-lg mx-auto" onClick={submition}>
+                        Place Bet
+                        </button>
+                    </div>
                     </form>
-                </div>
-                </div>} */}
+
+                    {betting &&  <div className='container'>
+                        <div className='betting-odds'>
+                        <h2 className='m-3 col-auto text-md-center fw-bold fs-1 ' style={{color: 'blue', textShadow: '2px 2px 5px black'}}>Betting Odds</h2>
+                            <hr />
+                        </div>
+                        <div className="row my-3">
+                            <ul class="list-group list-group-horizontal-sm" style={{overflowX: 'scroll'}}>
+                                {
+                                    odds.map((odd, index) => {
+                                        const coloring = parseFloat(odd) > 2 ? parseFloat(odd) < 10 ? '#643e94': 'rgb(192, 23, 180)' : 'rgb(52, 180, 255)';
+                                        return <li class="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
+                                    })
+                                }
+                            </ul>
+                        </div>
+                        <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontSize: '40px', fontStyle: 'oblique'}}>
+                            <b>Balance: </b>{balance}
+                        </div>
+                    </div>}
+
+                    </div>
+                    {/* {betting &&  <div className='container'>
+                        <div className='betting-odds'>
+                        <h2 className='m-3 col-auto text-md-center fw-bold fs-1 ' style={{color: 'blue', textShadow: '2px 2px 5px black'}}>Betting Odds</h2>
+                            <hr />
+                        </div>
+                        <div className="row my-3">
+                            <ul class="list-group list-group-horizontal-sm" style={{overflowX: 'scroll'}}>
+                                {
+                                    odds.map((odd, index) => {
+                                        const coloring = parseFloat(odd) > 2 ? parseFloat(odd) < 10 ? '#643e94': 'rgb(192, 23, 180)' : 'rgb(52, 180, 255)';
+                                        return <li class="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>} */}
+                </div>}
 
             </div>
             

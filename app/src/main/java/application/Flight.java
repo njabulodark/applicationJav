@@ -131,14 +131,11 @@ public class Flight {
         while (!done) {
             try {
                 c.clickXpath("//Button[contains(text(), 'Auto')]");
-                // Thread.sleep(1000);
-                // this.driver.findElement(By.xpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/app-navigation-switcher/div/button[2]")).click();
                 done = true;
                 break;
             } catch (Exception e) {
-                // e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("Trying again");
-                aviation();
             }
             
         }
@@ -166,9 +163,8 @@ public class Flight {
                 done = true;
                 break;
             } catch (Exception e) {
-                // e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("Trying again to set cash out amount");
-                aviation();
             }
         }
         
@@ -258,6 +254,38 @@ public class Flight {
             String output;
             while ((output = br.readLine()) != null) {
                 System.out.println(output);
+                break;
+            }
+
+            conn.disconnect();
+        } catch (Exception e) {
+            System.out.println("Exception in NetClientGet:- " + e);
+        }
+    }
+    
+    public void sendAmount( String balance) {
+        try {
+            URL url = new URL("http://localhost:8081/api/updateBalance");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            JSONObject input = new JSONObject();
+            input.put("balance", balance); // Insert the here
+
+            String inputString = input.toString();
+
+            conn.getOutputStream().write(inputString.getBytes("UTF-8"));
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP Error code : " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String output;
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
             }
 
             conn.disconnect();
@@ -314,6 +342,7 @@ public class Flight {
         while (true) {
             float lastOdd = Float.parseFloat(this.odds.get(length-1).substring(0, this.odds.get(length-1).length()-1 ));
             float secondLastOdd = Float.parseFloat(this.odds.get(length-2).substring(0, this.odds.get(length-2).length()-1 ));
+            sendData();
 
             if (this.frequentBets > 3 && secondLastOdd >= 2) {
                 // click bet
@@ -322,6 +351,7 @@ public class Flight {
                 // make a bet
                 trade++;
                 System.out.println("Traded");
+                sendAmount( balance + "");
 
                 String results = "";
                 
@@ -337,6 +367,7 @@ public class Flight {
                     System.out.println("Balance: "+balance);
                 } while (results.equals("No change"));
                 
+            
             } else if (this.frequentBets > 1 && lastOdd < 2 && secondLastOdd >= 2) {
                 // click bet
                 // c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
@@ -344,6 +375,7 @@ public class Flight {
                 // make a bet
                 trade++;
                 System.out.println("Traded");
+                sendAmount( balance + "");
 
                 String results = "";
 
@@ -377,18 +409,7 @@ public class Flight {
             System.out.println(odd);
         }
 
-        sendData();
-
-        // sendData( new String[] {
-        //     "1.00",  "3.58",
-        //     "5.65",  "1.57",
-        //     "2.22",  "14.32",
-        //     "40.51", "1.55",
-        //     "1.17",  "4.37",
-        //     "1.15",  "1.00"
-        //     });
-
-        // bet();
+        bet();
 
     }
     

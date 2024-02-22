@@ -30,7 +30,7 @@ const db = mysql.createConnection({
 
 
 app.get('/api/design', (req, res) => {
-    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) NOT NULL, av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json)", (err, result) => {
+    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) NOT NULL, av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json, Balance FLOAT)", (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -38,7 +38,6 @@ app.get('/api/design', (req, res) => {
             }
         });
 });
-
 
 // Command to execute
 const command = 'c: && cd "c:\\Users\\njabulo\\Documents\\code\\Aviation" && .\\gradlew run';
@@ -91,7 +90,7 @@ app.post('/api/account', (req, res) => {
 app.post('/api/oddslist', async (req, res) => {
     try {
         let data = req.body;
-        const sql = `Update aviation SET oddsList = ? WHERE id = '5'`;
+        const sql = `Update aviation SET oddsList = ? WHERE id = '749'`;
         data = JSON.stringify(data);
         db.query(sql, [data], (userErr, userResult) => {
             if (userErr) {
@@ -110,7 +109,7 @@ app.post('/api/oddslist', async (req, res) => {
 // get odds
 app.post('/api/getOdds', async (req, res) => {
     try {
-        const sql = `SELECT oddsList FROM aviation WHERE id = '5'`;
+        const sql = `SELECT oddsList FROM aviation WHERE id = '749'`;
         db.query(sql, (userErr, userResult) => {
             if (userErr) {
                 console.log(userErr);
@@ -125,20 +124,67 @@ app.post('/api/getOdds', async (req, res) => {
     }
 });
 
+
+// get balance
+app.post('/api/balance', async (req, res) => {
+    try {
+        const { id } = req.body;
+        const sql = `SELECT balance FROM aviation WHERE id = ?`;
+        db.query(sql, [id], (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                return res.json({ success: true, userResult });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// update balance
+app.post('/api/updateBalance', async (req, res) => {
+    try {
+        const { balance } = req.body;
+        const sql = `Update aviation SET balance = ? WHERE id = '749'`;
+        db.query(sql, [balance], (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                return res.json({ success: true, userResult });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 // add user using post request
 app.post('/api/add', async (req, res) => {
-    const data = req.body;
-    const sql = `Update aviation SET oddsList = ? WHERE id = '5'`;
-    db.query(sql, value, (err, result) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        } else {
-            return res.json({ success: true, result });
-            
-        }
-    });
+    try {
+        const { username, password } = req.body;
 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPass = await bcrypt.hash(password, salt);
+
+        // Insert user data into 'users' table
+        const userSql = "INSERT INTO aviation (username, password) VALUES (?, ?)";
+        db.query(userSql, [username, hashedPass], (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
  
 // register

@@ -54,18 +54,21 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const [ errMessage, SetErrMessage] = useState('');
+    const [ loginMessage, SetLoginMessage] = useState('');
 
     const submition = async (e) => {
         e.preventDefault();
-        console.log(username, password);
 
         const response = await axios.post("http://localhost:8081/api/login", {username, password});
         const {userId, messag} = response.data;
         if (userId) {
             localStorage.setItem("userId", userId);
-            navigate("/account");
+            SetErrMessage("Logging in, your are being redirected to the home page.....");
+            setTimeout(()=>{
+              navigate("/account");
+            }, 5000);
         } else if (messag) {
-            SetErrMessage(messag);
+            SetLoginMessage(messag);
         }
         // console.log(response.data);
         // if(response.data.userId) {
@@ -112,6 +115,7 @@ export default function Login() {
           <div className="card-body px-4 py-5 px-md-5">
             <form>
               {errMessage && <div className="alert alert-danger" role="alert">{errMessage}</div>}
+              {loginMessage && <div className="alert alert-success" role="alert">{loginMessage}</div>}
               <div className="row">
                 <div className="form-outline mb-4">
                     <input type="text" id="username" className="form-control" value={username} onChange={(e)=>{ setUsername(e.target.value)}} required/>

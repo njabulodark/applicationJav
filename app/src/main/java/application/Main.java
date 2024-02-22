@@ -2,10 +2,6 @@ package application;
 
 public class Main {
     public static void main(String[] args) {
-        
-        // Uct uct= new Uct();
-        // uct.run();
-
         String processName = "chrome.exe";
 
         try {
@@ -24,7 +20,8 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        // run mult thread application 20x
+        
         Flight flight = new Flight();
         flight.run();
 

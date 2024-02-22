@@ -4,6 +4,9 @@ import {useNavigate, Link} from 'react-router-dom';
 
 
 export default function Nav() {
+    const logout = ()=> {
+        localStorage.clear();
+    }
   return (
     <>
     <nav  className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
@@ -18,6 +21,8 @@ export default function Nav() {
                     <li className="nav-item"><Link className="nav-link" to="/" >Home</Link></li>
                     <li className="nav-item"><a className="nav-link" href="/account">Account</a></li>
                     {!localStorage.getItem("userId") && < li className="nav-item"><a className="nav-link" href="/login">Login</a></li>}
+                    {localStorage.getItem("userId") && < li className="nav-item"><a className="nav-link" onClick={logout} href="/login">Logout</a></li>}
+
                 </ul>
             </div>
         </div>

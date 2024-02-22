@@ -47,7 +47,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-// import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class Flight {
     private WebDriver driver;
@@ -63,7 +63,11 @@ public class Flight {
 
     public Flight(){
         // Create a new instance of the ChromeDriver
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\njabulo\\Documents\\code\\application\\app\\src\\main\\java\\application\\chromedriver.exe");
+        // driver location is current directory
+        
+        
+        // System.setProperty("webdriver.chrome.driver", "C:\\Users\\njabulo\\Documents\\code\\application\\app\\src\\main\\java\\application\\chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
         
         // Configure Chrome options
         ChromeOptions options = new ChromeOptions();

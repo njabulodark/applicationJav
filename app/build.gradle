@@ -23,6 +23,9 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
+    // webdrivermanager
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.7.0'
+
     // Selenium
     // implementation 'org.seleniumhq.selenium:htmlunit-driver:4.+'
     implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.+'

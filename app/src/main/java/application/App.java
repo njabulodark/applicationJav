@@ -2,7 +2,7 @@ package application;
 
 public class App {
     public static void main(String[] args) {
-        
+
         // Uct uct= new Uct();
         // uct.run();
 
@@ -24,7 +24,7 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+                
         Flight flight = new Flight();
         flight.run();
 

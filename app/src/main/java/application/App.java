@@ -8,6 +8,7 @@ public class App {
         
         
         do {
+            System.out.println("Starting the flight...");
             
             flight.run();
             // try {

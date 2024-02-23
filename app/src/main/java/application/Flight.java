@@ -456,10 +456,17 @@ public class Flight {
 
     public void run() {
         getData();
+        System.out.println("Logging in...");
         login();
+        System.out.println("Logged in");
+        System.out.println("Starting aviation ...");
         if (aviation()) {
+            System.out.println("Aviation started ....");
+            System.out.println("Data Collection started....");
             dataCollection();
+            System.out.println("betting started....");
             bet();
+            System.out.println("betting done....");
             this.failure = false;
 
         }

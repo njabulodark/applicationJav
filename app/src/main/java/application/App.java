@@ -4,32 +4,39 @@ public class App {
     public static void main(String[] args) {
         Flight flight = new Flight();
         // String processName = "chrome.exe";
-        String processName = "Firefox.exe";
+        String processName = "firefox";
         
-        
-        do {
-            System.out.println("Starting the flight...");
+        boolean state = true;
+
+        while (state) {
+
+            try {
+                Process process = Runtime.getRuntime().exec("pkill -f firefox");
+                process.waitFor();
+                process = Runtime.getRuntime().exec("pkill -f java");
+                process.waitFor();
+                if (process.exitValue() == 0) {
+                    System.out.println("Process " + processName + " terminated successfully.");
+                } else {
+                    System.out.println("Failed to terminate process " + processName + ".");
+                }
+            } catch (Exception e) {
+                // e.printStackTrace();
+            }
             
-            flight.run();
-            // try {
-            //     // Execute the taskkill command to terminate the specified process
-            //     Process process = Runtime.getRuntime().exec("taskkill /F /IM " + processName);
-    
-            //     // Wait for the process to complete
-            //     process.waitFor();
-    
-            //     // Check the exit value to determine if the process was terminated successfully
-            //     if (process.exitValue() == 0) {
-            //         System.out.println("Process " + processName + " terminated successfully.");
-            //     } else {
-            //         System.out.println("Failed to terminate process " + processName + ".");
-            //     }
-            // } catch (Exception e) {
-            //     e.printStackTrace();
-            // }
+            try {
+                flight.run();
 
-        } while (flight.failure);
-
+                if (flight.failure == false) {
+                    state = false;
+                } else {
+                    state = true;
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+                state = true;
+            }
+        }
         // kill chrom for linux
         // String processName = "chrome"
         // try {
@@ -43,8 +50,6 @@ public class App {
         // } catch (Exception e) {
         //     e.printStackTrace();
         // }
-
-        flight.run();
 
         // Ufs ufs = new Ufs();
         // ufs.run();

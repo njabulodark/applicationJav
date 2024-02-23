@@ -193,6 +193,7 @@ export default function Account() {
                 <div id="radius-shape-1" className="position-absolute rounded-circle shadow-5-strong"></div>
                 <div id="radius-shape-2" className="position-absolute shadow-5-strong"></div>
 
+                {/*  When user is not logged in  */}
                 {!localStorage.getItem("userId") && <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
                     <h2 className='m-3 col-auto text-md-center'> Your hollywood Account</h2>
@@ -219,6 +220,7 @@ export default function Account() {
                 </div>
                 </div>}
 
+                {/*  When user is logged in  */}
                 {!nextSet && localStorage.getItem("userId") && <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
                     <h2 className='m-3 col-auto text-md-center'> Your hollywood Account</h2>

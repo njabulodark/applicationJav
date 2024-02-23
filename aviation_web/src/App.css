@@ -28,7 +28,7 @@
   /* background-color: #282c34;
   background-attachment: fixed; */
   /* background-image: './files/components/assets/img/Hollywoodbets-Aviator.png'; */
-  background: #282c34 url("./files/assets/img/Hollywoodbets-Aviator.png") no-repeat center;
+  background: linear-gradient(rgb(11, 5, 38, 0.7), rgba(0, 0, 0, 0.2))url("./files/assets/img/Hollywoodbets-Aviator.png") no-repeat center;
   background-size: cover;
   min-height: 100vh;
   display: flex;
@@ -39,7 +39,7 @@
   color: white;
 }
 &::before {
-  content: "";
+  /* content: ; */
   position: absolute;
   top: 0;
   left: 0;

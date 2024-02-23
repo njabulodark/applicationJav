@@ -67,32 +67,37 @@ public class Flight {
         
         
         // System.setProperty("webdriver.chrome.driver", "C:\\Users\\njabulo\\Documents\\code\\application\\app\\src\\main\\java\\application\\chromedriver.exe");
-        WebDriverManager.chromedriver().setup();
+        WebDriverManager.firefoxdriver().setup();
         
         // Configure Chrome options
-        ChromeOptions options = new ChromeOptions();
+        // ChromeOptions options = new ChromeOptions();
 
-        // Disable the "Save Password" prompt
-        options.addArguments("--disable-save-password-bubble");
-        // Disable save address prompt
-        options.addArguments("--disable-autofill-keyboard-accessory-view[8]");
-        // Disable the "Chrome is being controlled by automated test software" prompt
-        options.addArguments("disable-infobars");
-        //  Disable sound
-        options.addArguments("--mute-audio");
-        // options.setExperimentalOption("auto-fill", "false");
-        Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put("credentials_enable_service", false);
-        prefs.put("profile.password_manager_enabled", false);
-        prefs.put("autofill.profile_enabled", false);
+        // // Disable the "Save Password" prompt
+        // options.addArguments("--disable-save-password-bubble");
+        // // Disable save address prompt
+        // options.addArguments("--disable-autofill-keyboard-accessory-view[8]");
+        // // Disable the "Chrome is being controlled by automated test software" prompt
+        // options.addArguments("disable-infobars");
+        // //  Disable sound
+        // options.addArguments("--mute-audio");
+        // // options.setExperimentalOption("auto-fill", "false");
+        // Map<String, Object> prefs = new HashMap<String, Object>();
+        // prefs.put("credentials_enable_service", false);
+        // prefs.put("profile.password_manager_enabled", false);
+        // prefs.put("autofill.profile_enabled", false);
 
-        options.setExperimentalOption("prefs", prefs);
+        // options.setExperimentalOption("prefs", prefs);
 
-        // headless mode
-        // options.addArguments("--headless");
+        // // headless mode
+        // // options.addArguments("--headless");
 
-        this.driver = new ChromeDriver(options);
+        // this.driver = new ChromeDriver(options);
         // make driver wait for 2 seconds before executing another instruction
+
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments("--headless");
+
+        this.driver = new FirefoxDriver(options);
         this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         this.driver.get("https://www.hollywoodbets.net/");
         
@@ -312,7 +317,9 @@ public class Flight {
             this.frequentBets++;
         } else if (secondLastOdd >= 2 && lastOdd < 2) {
             this.frequentBets--;
-        } else if (this.frequentBets < 0) {
+        }
+        
+        if (this.frequentBets < 0) {
             this.frequentBets = 0;
         }
     }

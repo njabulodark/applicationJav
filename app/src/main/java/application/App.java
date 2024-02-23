@@ -2,25 +2,39 @@ package application;
 
 public class App {
     public static void main(String[] args) {
-        String processName = "chrome.exe";
+        // String processName = "chrome.exe";
 
-        try {
-            // Execute the taskkill command to terminate the specified process
-            Process process = Runtime.getRuntime().exec("taskkill /F /IM " + processName);
+        // try {
+        //     // Execute the taskkill command to terminate the specified process
+        //     Process process = Runtime.getRuntime().exec("taskkill /F /IM " + processName);
 
-            // Wait for the process to complete
-            process.waitFor();
+        //     // Wait for the process to complete
+        //     process.waitFor();
 
-            // Check the exit value to determine if the process was terminated successfully
-            if (process.exitValue() == 0) {
-                System.out.println("Process " + processName + " terminated successfully.");
-            } else {
-                System.out.println("Failed to terminate process " + processName + ".");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // run mult thread application 20x
+        //     // Check the exit value to determine if the process was terminated successfully
+        //     if (process.exitValue() == 0) {
+        //         System.out.println("Process " + processName + " terminated successfully.");
+        //     } else {
+        //         System.out.println("Failed to terminate process " + processName + ".");
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+
+        // kill chrom for linux
+        // String processName = "chrome"
+        // try {
+        //     Process process = Runtime.getRuntime().exec("pkill -f " + processName);
+        //     process.waitFor();
+        //     if (process.exitValue() == 0) {
+        //         System.out.println("Process " + processName + " terminated successfully.");
+        //     } else {
+        //         System.out.println("Failed to terminate process " + processName + ".");
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+        
         
         Flight flight = new Flight();
         flight.run();

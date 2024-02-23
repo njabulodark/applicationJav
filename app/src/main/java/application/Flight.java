@@ -96,9 +96,9 @@ public class Flight {
         // make driver wait for 2 seconds before executing another instruction
 
         FirefoxOptions options = new FirefoxOptions();
-        // options.addArguments("--headless");
+        options.addArguments("--headless");
 
-        this.driver = new FirefoxDriver();
+        this.driver = new FirefoxDriver( options );
         this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         this.driver.get("https://www.hollywoodbets.net/");
         

@@ -209,7 +209,7 @@ public class Flight {
 
     public String getData() {
         try {
-            URL url = new URL("http://localhost:8081/api/get"); // Replace with the API endpoint
+            URL url = new URL("http://172.174.153.102:8081/api/get"); // Replace with the API endpoint
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
@@ -245,7 +245,7 @@ public class Flight {
 
     public void sendData() {
         try {
-            URL url = new URL("http://localhost:8081/api/oddslist");
+            URL url = new URL("http://172.174.153.102:8081/api/oddslist");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -277,7 +277,7 @@ public class Flight {
     
     public void sendAmount( String balance) {
         try {
-            URL url = new URL("http://localhost:8081/api/updateBalance");
+            URL url = new URL("http://172.174.153.102:8081/api/updateBalance");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");

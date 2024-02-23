@@ -1,63 +1,58 @@
-class ProblemAlG007a:
-    def __init__(self, string):
-        self.str = string
-        self.lis = string.split(" ")
-        self.checked = []
-        self.temp_lis = []
-        self.clean_lis = []
-        self.combo_pair = []
-        
-    def prepair(self):
-        for i in self.lis:
-            if i not in self.temp_lis: 
-                self.clean_lis.append(i)
-                self.temp_lis.append(i)
-                
-    def results(self):
-        lenght = len(self.lis)
-        self.temp_lis = []
-        self.prepair()
+#!/bin/bash
 
-        for control in self.clean_lis:
-            # control
-            pair = 0
-            next_pair= []
-            for i in range(lenght):
-                if self.lis[i] == control:
-                    for element in range(i+1, lenght):
-                        if control == self.lis[element]: self.combo_pair.append((i, element))
+# Check if the script is run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run this script as root."
+  exit 1
+fi
 
-                    # check for next to pair
-                    try:
-                        if self.lis[i] == self.lis[i+1]:
-                            pair+=1
-                            next_pair.append((i, i+1))
-                    except:
-                        pass
+# Update the package list
+apt update
 
-            # make variables
-            combo_pair_str = ""
-            # combo_pair_str
-            try:
-                combo_pair_str = " ".join([str(item) for item in self.combo_pair])
-            except:
-                pass
+# Install Nginx
+apt install -y nginx
 
-            try:
-                next_pair = " ".join([str(item) for item in next_pair])
-            except:
-                next_pair = ""
+# Enable and start Nginx service
+systemctl enable nginx
+systemctl start nginx
 
-            print(f'{control}: {len(self.combo_pair)} combo-pairs {combo_pair_str} AND {pair} next-to-pairs {next_pair}')
+# Create a basic Nginx configuration file for your website
+bash -c 'cat > /etc/nginx/sites-available/172.174.153.102 <<EOF
+server {
+    listen 80;
+    listen [::]:80;
 
-            self.combo_pair = []
-            pair = 0
+    root /var/www/172.174.153.102;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
 
-if __name__ == "__main__":
-    # test
-    problem = ProblemAlG007a("spring java spring spring spring javascript java jboss jboss tomcat jboss")
-    problem.results()
+}
+EOF'
 
-    # test with input
-    # problem = ProblemAlG007a(input("please enter the text you would like to test: "))
-    # problem.results()
+# Create the document root for your website
+mkdir -p /var/www/172.174.153.102
+
+# giving permision
+chmod 755 -R /var/www/172.174.153.102
+
+# njabulo is the username
+chown -R njabulo:www-data /var/www/172.174.153.102
+
+# Create a sample index.html file
+echo "<html><body><h1>Welcome to 172.174.153.102</h1></body></html>" > /var/www/172.174.153.102/index.html
+
+# unink default
+unlink /etc/nginx/sites-enabled/default
+# Create a symbolic link to enable the site
+ln -s /etc/nginx/sites-available/172.174.153.102 /etc/nginx/sites-enabled/
+
+# Test Nginx configuration
+nginx -t
+
+# Reload Nginx to apply the changes
+systemctl reload nginx
+
+echo "Nginx has been installed and configured for your website. Visit http://172.174.153.102 to see your website."

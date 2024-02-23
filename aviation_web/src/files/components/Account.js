@@ -65,7 +65,7 @@ export default function Account() {
     function timed(){
         // wait 15 seconds
         setTimeout(async () => {
-            await axios.post("http://localhost:8081/api/balance", {"id": localStorage.getItem("userId")})
+            await axios.post("http://172.174.153.102:8081/api/balance", {"id": localStorage.getItem("userId")})
             .then((response) => {
                 if (response.data.userResult) {
                     setBalance(response.data.userResult[0].balance);
@@ -81,7 +81,7 @@ export default function Account() {
 
     const subUserName = async (e) => {
         e.preventDefault();
-        const response = await axios.post("http://localhost:8081/api/keys", {"av_username": username, "id": localStorage.getItem("userId")});
+        const response = await axios.post("http://172.174.153.102:8081/api/keys", {"av_username": username, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
             setUserMessage("Username saved");
@@ -90,7 +90,7 @@ export default function Account() {
 
     const subPass = async (e) => {
         e.preventDefault();
-        const response = await axios.post("http://localhost:8081/api/keys", {"av_password": password, "id": localStorage.getItem("userId")});
+        const response = await axios.post("http://172.174.153.102:8081/api/keys", {"av_password": password, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
             setUserMessage("Password saved");
@@ -99,7 +99,7 @@ export default function Account() {
     
     const subCashout = async (e) => {
         e.preventDefault();
-        const response = await axios.post("http://localhost:8081/api/keys", {"bet_amount": cashout, "id": localStorage.getItem("userId")});
+        const response = await axios.post("http://172.174.153.102:8081/api/keys", {"bet_amount": cashout, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
             setUserMessage("Bet amount saved");
@@ -108,7 +108,7 @@ export default function Account() {
 
     const subXAmount = async (e) => {
         e.preventDefault();
-        const response = await axios.post("http://localhost:8081/api/keys", {"x_amount": x_amount, "id": localStorage.getItem("userId")});
+        const response = await axios.post("http://172.174.153.102:8081/api/keys", {"x_amount": x_amount, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
             setUserMessage("Cashout amount saved");
@@ -117,7 +117,7 @@ export default function Account() {
     
     const submition = async (e) => {
         e.preventDefault();
-        const response = await axios.get("http://localhost:8081/api/terminal");
+        const response = await axios.get("http://172.174.153.102:8081/api/terminal");
 
         // wait 15 seconds
         setTimeout(() => {
@@ -127,7 +127,7 @@ export default function Account() {
 
     const getOdds = async (e) => {
         e.preventDefault();
-        await axios.get("http://localhost:8081/api/getOdds'")
+        await axios.get("http://172.174.153.102:8081/api/getOdds'")
             .then((response) => {
                 if (response.data.success) {
                     setOdds(response.data.userResult);
@@ -139,7 +139,7 @@ export default function Account() {
         document.title = "Account";
 
         const getAccount = async () => {
-            await axios.post("http://localhost:8081/api/account", {"id": localStorage.getItem("userId")})
+            await axios.post("http://172.174.153.102:8081/api/account", {"id": localStorage.getItem("userId")})
             .then((response) => {
                 // console.log(response.data[0]);
                 if (response.data[0]) {

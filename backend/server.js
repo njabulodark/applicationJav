@@ -30,7 +30,7 @@ const db = mysql.createConnection({
 
 
 app.get('/api/design', (req, res) => {
-    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) NOT NULL, av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json, Balance FLOAT)", (err, result) => {
+    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) , av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json, Balance FLOAT)", (err, result) => {
             if (err) {
                 console.log(err);
             } else {

@@ -60,6 +60,7 @@ public class Flight {
     private String password;
     private int bet_amount;
     private int x_amount;
+    public boolean failure = false;
 
     public Flight(){
         // Create a new instance of the ChromeDriver
@@ -95,9 +96,9 @@ public class Flight {
         // make driver wait for 2 seconds before executing another instruction
 
         FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--headless");
+        // options.addArguments("--headless");
 
-        this.driver = new FirefoxDriver(options);
+        this.driver = new FirefoxDriver();
         this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         this.driver.get("https://www.hollywoodbets.net/");
         
@@ -132,24 +133,22 @@ public class Flight {
         this.driver.get("https://www.hollywoodbets.net/aviator");
     }
 
-    public void aviation() {
+    public boolean aviation() {
         // switch to iframe
         this.driver.switchTo().frame(this.driver.findElement(By.tagName("iframe")));
 
         // click auto
         boolean done = false;
 
-        while (!done) {
-            try {
-                c.clickXpath("//Button[contains(text(), 'Auto')]");
-                done = true;
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Trying again");
-            }
-            
+        try {
+            c.clickXpath("//Button[contains(text(), 'Auto')]");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Clicking Auto Failed");
+            this.failure = true;
+            return false;
         }
+
 
         try {
             Thread.sleep(2000);
@@ -158,33 +157,35 @@ public class Flight {
             // c.sendXpath("//input[@class='font-weight-bold']", "1");
         } catch (InterruptedException e) {
             e.printStackTrace();
+            this.failure = true;
+            return false;
             
         }
 
-        
-        done = false;
-        while (!done) {
-            try {
-                // click auto Cash out
-                c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[3]/div[2]/div[1]/app-ui-switcher/div/span");
+
+        try {
+            // click auto Cash out
+            c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[3]/div[2]/div[1]/app-ui-switcher/div/span");
                 
-                // send cash out amount
-                c.sendXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[3]/div[2]/div[2]/div/app-spinner/div/div[2]/input", Integer.toString(this.x_amount));
-                // c.sendXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[3]/div[2]/div[2]/div/app-spinner/div/div[2]/input", "2");
-                done = true;
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Trying again to set cash out amount");
-            }
+            // send cash out amount
+            c.sendXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[3]/div[2]/div[2]/div/app-spinner/div/div[2]/input", Integer.toString(this.x_amount));
+            // c.sendXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[3]/div[2]/div[2]/div/app-spinner/div/div[2]/input", "2");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Trying again to set cash out amount");
+            this.failure = true;
+            return false;
+
         }
+
         
         // get the latest odds
         String odd = c.getTextXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[1]/app-stats-widget/div/div[1]/div/app-bubble-multiplier[1]/div");
-        // "/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[1]/app-stats-widget/div/div[1]/div/app-bubble-multiplier[1]/div"
-        // /html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[1]/app-stats-widget/div/div[1]/div/app-bubble-multiplier[2]/div
+
         System.out.println("Latest odd: "+odd);
         this.odds.add(odd);
+        return true;
     }
 
     public void dataCollection() {
@@ -342,22 +343,52 @@ public class Flight {
         return "No change";
     }
     
+    public void clean() {
+        // removing repeated odds that follow each other
+        int length = this.odds.size();
+        for (int i = 0; i < length-1; i++) {
+            try {
+                if (this.odds.get(i).equals(this.odds.get(i+1))) {
+                    this.odds.remove(i);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+    }
+
     public void bet() {
         float balance = Float.parseFloat(c.getTextXpath("//span[contains(@class, 'amount')]"));
         int length = this.odds.size();
         int trade = 0;
         dataCollection();
         CalcFreq();
-
+        
         System.out.println("Initial balance: " + balance);
-
-
+        
+        
         while (true) {
+            // dataCollection();
+            sendData();
+            length = this.odds.size();
+
             float lastOdd = Float.parseFloat(this.odds.get(length-1).substring(0, this.odds.get(length-1).length()-1 ));
             float secondLastOdd = Float.parseFloat(this.odds.get(length-2).substring(0, this.odds.get(length-2).length()-1 ));
-            sendData();
 
-            if (this.frequentBets > 3 && secondLastOdd >= 2) {
+            String odd = this.driver.findElement(By.xpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[1]/app-stats-widget/div/div[1]/div/app-bubble-multiplier[1]/div")).getText();
+            String lastOdString = lastOdd+"x";
+
+            if ( lastOdString.equals(odd) ) {
+                try {
+                    Thread.sleep(2000);
+                    System.out.println("No new odd");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+
+            if (this.frequentBets > 3 && secondLastOdd >= 2 && !lastOdString.equals(odd)) {
                 // click bet
                 // c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
 
@@ -381,7 +412,7 @@ public class Flight {
                 } while (results.equals("No change"));
                 
             
-            } else if (this.frequentBets > 1 && lastOdd < 2 && secondLastOdd >= 2) {
+            } else if (this.frequentBets > 1 && lastOdd < 2 && secondLastOdd >= 2 && !lastOdString.equals(odd)) {
                 // click bet
                 // c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
                 
@@ -404,8 +435,20 @@ public class Flight {
                     System.out.println("Balance: "+balance);
                 } while (results.equals("No change"));
             }
+            
+            
+            if (!odd.equals("")) {
+                this.odds.add(odd);
+            }
             CalcFreq();
             System.out.println("new frequence: "+this.frequentBets);
+            clean();
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
             
         }
   
@@ -414,15 +457,12 @@ public class Flight {
     public void run() {
         getData();
         login();
-        aviation();
-        dataCollection();
+        if (aviation()) {
+            dataCollection();
+            bet();
+            this.failure = false;
 
-        // print the odds
-        for (String odd : this.odds) {
-            System.out.println(odd);
         }
-
-        bet();
 
     }
     

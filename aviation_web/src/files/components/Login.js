@@ -59,16 +59,17 @@ export default function Login() {
     const submition = async (e) => {
         e.preventDefault();
 
+        // const response = await axios.post("http://localhost:8081/api/login", {username, password});
         const response = await axios.post("http://172.174.153.102:8081/api/login", {username, password});
         const {userId, messag} = response.data;
         if (userId) {
             localStorage.setItem("userId", userId);
-            SetErrMessage("Logging in, your are being redirected to the home page.....");
+            SetLoginMessage("Logging in, your are being redirected to the home page.....");
             setTimeout(()=>{
               navigate("/account");
             }, 5000);
-        } else if (messag) {
-            SetLoginMessage(messag);
+          } else if (messag) {
+            SetErrMessage(messag);
         }
         // console.log(response.data);
         // if(response.data.userId) {
@@ -90,7 +91,7 @@ export default function Login() {
         <header className="py-5 bg-dark" >
         </header>
 
-<section className="background-radial-gradient overflow-hidden">
+<section style={{background: 'radial-gradient'}} className="background-radial-gradient overflow-hidden">
 
   <div className="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
     <div className="row gx-lg-5 align-items-center mb-5">

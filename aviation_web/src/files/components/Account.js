@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
+
 const Section = styled.section`
 .background-radial-gradient {
   background-color: hsl(218, 41%, 15%);
@@ -58,29 +59,26 @@ export default function Account() {
     const [ x_amount, setXAmount] = useState('');
     const [ userMessage, setUserMessage] = useState('');
     const [ nextSet, setNextSet] = useState(false);
-    const [ odds, setOdds] = useState([1.2,2.4,3.1,3.5,4.19,54.0,55.2]);
+    const [ odds, setOdds] = useState("loading");
     const [ betting, setBetting] = useState(false);
     const [ balance, setBalance] = useState(0)
 
-    function timed(){
-        // wait 15 seconds
-        setTimeout(async () => {
-            await axios.post("http://172.174.153.102:8081/api/balance", {"id": localStorage.getItem("userId")})
-            .then((response) => {
-                if (response.data.userResult) {
-                    setBalance(response.data.userResult[0].balance);
-                    console.log("balance", response.data.userResult[0].balance);
-                }
-            });
-        }, 3000);
-
-    }
-
-    timed();
+    
+    setTimeout(async () => {
+        // await axios.post("http://localhost:8081/api/balance", {"id": localStorage.getItem("userId")})
+        await axios.post("http://172.174.153.102:8081/api/balance", {"id": localStorage.getItem("userId")})
+        .then((response) => {
+            if (response.data.userResult) {
+                setBalance(response.data.userResult[0].balance);
+                console.log("balance", response.data.userResult[0].balance);
+            }
+        });
+    }, 5000);
     
 
     const subUserName = async (e) => {
         e.preventDefault();
+        // const response = await axios.post("http://localhost:8081/api/keys", {"av_username": username, "id": localStorage.getItem("userId")});
         const response = await axios.post("http://172.174.153.102:8081/api/keys", {"av_username": username, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
@@ -90,6 +88,7 @@ export default function Account() {
 
     const subPass = async (e) => {
         e.preventDefault();
+        // const response = await axios.post("http://localhost:8081/api/keys", {"av_password": password, "id": localStorage.getItem("userId")});
         const response = await axios.post("http://172.174.153.102:8081/api/keys", {"av_password": password, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
@@ -99,6 +98,7 @@ export default function Account() {
     
     const subCashout = async (e) => {
         e.preventDefault();
+        // const response = await axios.post("http://localhost:8081/api/keys", {"bet_amount": cashout, "id": localStorage.getItem("userId")});
         const response = await axios.post("http://172.174.153.102:8081/api/keys", {"bet_amount": cashout, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
@@ -108,6 +108,7 @@ export default function Account() {
 
     const subXAmount = async (e) => {
         e.preventDefault();
+        // const response = await axios.post("http://localhost:8081/api/keys", {"x_amount": x_amount, "id": localStorage.getItem("userId")});
         const response = await axios.post("http://172.174.153.102:8081/api/keys", {"x_amount": x_amount, "id": localStorage.getItem("userId")});
         // console.log(response.status);
         if (response.status === 200) {
@@ -117,28 +118,44 @@ export default function Account() {
     
     const submition = async (e) => {
         e.preventDefault();
+        // const response = await axios.get("http://localhost:8081/api/terminal");
         const response = await axios.get("http://172.174.153.102:8081/api/terminal");
 
         // wait 15 seconds
         setTimeout(() => {
             setBetting(true);
+            getOdds();
         }, 15000);
     }
 
-    const getOdds = async (e) => {
-        e.preventDefault();
-        await axios.get("http://172.174.153.102:8081/api/getOdds'")
-            .then((response) => {
-                if (response.data.success) {
-                    setOdds(response.data.userResult);
-                }
-            });
+    const getOdds = async () => {
+        // while (true) {
+            // await axios.get("http://localhost:8081/api/getOdds")
+            await axios.get("http://172.174.153.102:8081/api/getOdds")
+                .then((response) => {
+                    if (response.data.success) {
+                        // turn tring  {} to jeson
+                        const oddss = JSON.parse(response.data.userResult[0].oddsList);
+                        console.log(oddss.bets);
+                        // reverse the array
+                        oddss.bets.reverse();
+                        setOdds(oddss.bets.reverse());
+
+                    }
+                });
+            // }   
     }
+
+    setTimeout(() => {
+        
+        getOdds();
+    }, 5000);
 
     useEffect(() => {
         document.title = "Account";
 
         const getAccount = async () => {
+            // await axios.post("http://localhost:8081/api/account", {"id": localStorage.getItem("userId")})
             await axios.post("http://172.174.153.102:8081/api/account", {"id": localStorage.getItem("userId")})
             .then((response) => {
                 // console.log(response.data[0]);
@@ -201,7 +218,7 @@ export default function Account() {
                     <form>
 
                     <div className="form-row">
-                        <div className="alert alert-success" role="alert">Please login to have Access to this page</div>
+                        <div className="alert alert-danger" role="alert">Please login to have Access to this page</div>
                         <div className="form-outline mb-4">
                             <label className="form-label px-3" htmlFor="username">Aviation Username: </label>
                             <input type="text" id="username"  className='sr-only pb-2 mb-2' readOnly/>
@@ -286,7 +303,7 @@ export default function Account() {
                             save
                         </button>
                     </div>
-                    <div class="col-md-6 mx-auto text-center">
+                    <div className="col-md-6 mx-auto text-center">
                         <button type="submit" className="btn btn-primary btn-block text-lg mx-auto" onClick={submition}>
                         Place Bet
                         </button>
@@ -299,12 +316,16 @@ export default function Account() {
                             <hr />
                         </div>
                         <div className="row my-3">
-                            <ul class="list-group list-group-horizontal-sm" style={{overflowX: 'scroll'}}>
-                                {
-                                    odds.map((odd, index) => {
+                            <ul className="list-group list-group-horizontal-sm" style={{overflowX: 'scroll', overflowY: 'hidden'}}>
+                                {(odds !== "loading")? 
+                                    (odds.map((odd, index) => {
                                         const coloring = parseFloat(odd) > 2 ? parseFloat(odd) < 10 ? '#643e94': 'rgb(192, 23, 180)' : 'rgb(52, 180, 255)';
-                                        return <li class="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
-                                    })
+                                        return <li className="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
+                                    })): 
+                                    (   <div className="spinner-border" style={{width: '3rem', height: '3rem', margin: 'auto'}} role="status">
+                                            <span className="sr-only"></span>
+                                        </div>
+                                    )
                                 }
                             </ul>
                         </div>
@@ -320,11 +341,11 @@ export default function Account() {
                             <hr />
                         </div>
                         <div className="row my-3">
-                            <ul class="list-group list-group-horizontal-sm" style={{overflowX: 'scroll'}}>
+                            <ul className="list-group list-group-horizontal-sm" style={{overflowX: 'scroll'}}>
                                 {
                                     odds.map((odd, index) => {
                                         const coloring = parseFloat(odd) > 2 ? parseFloat(odd) < 10 ? '#643e94': 'rgb(192, 23, 180)' : 'rgb(52, 180, 255)';
-                                        return <li class="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
+                                        return <li className="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
                                     })
                                 }
                             </ul>

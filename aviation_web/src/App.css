@@ -38,8 +38,13 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.background-radial-gradient {
+  background: linear-gradient(rgb(11, 5, 38, 0.7), rgba(0, 0, 0, 0.2));
+
+}
 &::before {
-  /* content: ; */
+  /* content: ''; */
   position: absolute;
   top: 0;
   left: 0;

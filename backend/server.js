@@ -23,8 +23,8 @@ app.use((req, res, next) => {
 
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: '',
+    user: 'njeb1',
+    password: '0pama0tw',
     database: 'users'
 });
 
@@ -107,7 +107,7 @@ app.post('/api/oddslist', async (req, res) => {
 });
 
 // get odds
-app.post('/api/getOdds', async (req, res) => {
+app.get('/api/getodds', async (req, res) => {
     try {
         const sql = `SELECT oddsList FROM aviation WHERE id = '749'`;
         db.query(sql, (userErr, userResult) => {

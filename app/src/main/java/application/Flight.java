@@ -99,7 +99,7 @@ public class Flight {
         options.addArguments("--headless");
 
         this.driver = new FirefoxDriver( options );
-        this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         this.driver.get("https://www.hollywoodbets.net/");
         
         
@@ -143,10 +143,8 @@ public class Flight {
         try {
             c.clickXpath("//Button[contains(text(), 'Auto')]");
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Clicking Auto Failed");
-            this.failure = true;
-            return false;
+            c.clickXpath("//Button[contains(text(), 'Auto')]");
+
         }
 
 
@@ -370,6 +368,7 @@ public class Flight {
         while (true) {
             // dataCollection();
             sendData();
+            sendAmount( balance + "");
             length = this.odds.size();
 
             float lastOdd = Float.parseFloat(this.odds.get(length-1).substring(0, this.odds.get(length-1).length()-1 ));
@@ -395,7 +394,6 @@ public class Flight {
                 // make a bet
                 trade++;
                 System.out.println("Traded");
-                sendAmount( balance + "");
 
                 String results = "";
                 
@@ -420,6 +418,7 @@ public class Flight {
                 trade++;
                 System.out.println("Traded");
                 sendAmount( balance + "");
+                System.out.println("Balance: "+balance);
 
                 String results = "";
 

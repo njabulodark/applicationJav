@@ -40,7 +40,7 @@ app.get('/api/design', (req, res) => {
 });
 
 // Command to execute
-const command = 'c: && cd "c:\\Users\\njabulo\\Documents\\code\\Aviation" && .\\gradlew run';
+const command = 'cd /home/njabulo/applicationJav && gradle run';
 
 // Function to run the command and keep it running
 function runCommand() {
@@ -56,6 +56,18 @@ function runCommand() {
 // Route to trigger the command execution
 app.get('/api/terminal', (req, res) => {
     runCommand();
+    res.send('Command started');
+});
+
+// cancel firefox using command
+app.get('/api/kill', (req, res) => {
+    exec('killall firefox', (err, stdout, stderr) => {
+        if (err) {
+            console.error('Error executing command:', err);
+            return;
+        }
+        console.log('Command output:', stdout);
+    });
     res.send('Command started');
 });
 

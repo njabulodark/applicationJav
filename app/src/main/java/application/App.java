@@ -34,14 +34,14 @@ public class App {
             } else {
                 try {
                         Process process = Runtime.getRuntime().exec("pkill -f firefox");
-                        process.waitFor();
-                        process = Runtime.getRuntime().exec("pkill -f java");
-                        process.waitFor();
-                        if (process.exitValue() == 0) {
-                                System.out.println("Process firefox terminated successfully.");
-                            } else {
-                                    System.out.println("Failed to terminate process firefox.");
-                                }
+                        // process.waitFor();
+                        // process = Runtime.getRuntime().exec("pkill -f java");
+                        // process.waitFor();
+                        // if (process.exitValue() == 0) {
+                        //         System.out.println("Process firefox terminated successfully.");
+                        //     } else {
+                        //             System.out.println("Failed to terminate process firefox.");
+                        //         }
                 } catch (Exception e) {
                         // e.printStackTrace();
                     }

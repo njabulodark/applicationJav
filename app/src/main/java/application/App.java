@@ -12,41 +12,41 @@ public class App {
         
         while (state) {
 
-            if (os.indexOf("win") >= 0) {
-                String processName = "firefox.exe";
+            // if (os.indexOf("win") >= 0) {
+            //     String processName = "firefox.exe";
 
-                try {
-                    // Execute the taskkill command to terminate the specified process
-                    Process process = Runtime.getRuntime().exec("taskkill /F /IM " + processName);
+            //     try {
+            //         // Execute the taskkill command to terminate the specified process
+            //         Process process = Runtime.getRuntime().exec("taskkill /F /IM " + processName);
 
-                    // Wait for the process to complete
-                    process.waitFor();
+            //         // Wait for the process to complete
+            //         process.waitFor();
 
-                    // Check the exit value to determine if the process was terminated successfully
-                    if (process.exitValue() == 0) {
-                        System.out.println("Process " + processName + " terminated successfully.");
-                    } else {
-                        System.out.println("Failed to terminate process " + processName + ".");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                        Process process = Runtime.getRuntime().exec("pkill -f firefox");
-                        // process.waitFor();
-                        // process = Runtime.getRuntime().exec("pkill -f java");
-                        // process.waitFor();
-                        // if (process.exitValue() == 0) {
-                        //         System.out.println("Process firefox terminated successfully.");
-                        //     } else {
-                        //             System.out.println("Failed to terminate process firefox.");
-                        //         }
-                } catch (Exception e) {
-                        // e.printStackTrace();
-                    }
+            //         // Check the exit value to determine if the process was terminated successfully
+            //         if (process.exitValue() == 0) {
+            //             System.out.println("Process " + processName + " terminated successfully.");
+            //         } else {
+            //             System.out.println("Failed to terminate process " + processName + ".");
+            //         }
+            //     } catch (Exception e) {
+            //         e.printStackTrace();
+            //     }
+            // } else {
+            //     try {
+            //             Process process = Runtime.getRuntime().exec("pkill -f firefox");
+            //             // process.waitFor();
+            //             // process = Runtime.getRuntime().exec("pkill -f java");
+            //             // process.waitFor();
+            //             // if (process.exitValue() == 0) {
+            //             //         System.out.println("Process firefox terminated successfully.");
+            //             //     } else {
+            //             //             System.out.println("Failed to terminate process firefox.");
+            //             //         }
+            //     } catch (Exception e) {
+            //             // e.printStackTrace();
+            //         }
                             
-            }
+            // }
             try {
                 Flight flight = new Flight();
                 flight.run();

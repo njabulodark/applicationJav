@@ -144,6 +144,7 @@ public class Flight {
         try {
             c.clickXpath("//Button[contains(text(), 'Auto')]");
         } catch (Exception e) {
+            e.printStackTrace();
             c.clickXpath("//Button[contains(text(), 'Auto')]");
 
         }

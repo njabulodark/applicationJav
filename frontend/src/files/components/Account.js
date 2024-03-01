@@ -130,6 +130,7 @@ export default function Account() {
     const submition = async (e) => {
         e.preventDefault();
         // const response = await axios.get("http://localhost:8081/api/terminal");
+        axios.get(host+":8081/api/exit");
         const response = await axios.get(host+":8081/api/terminal");
 
         setTimeout(() => {

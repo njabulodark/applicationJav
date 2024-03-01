@@ -44,13 +44,7 @@ const command = 'cd /home/njabulo/applicationJav/application && gradle run';
 
 // Function to run the command and keep it running
 function runCommand() {
-    exec(command, (err, stdout, stderr) => {
-        if (err) {
-            console.error('Error executing command:', err);
-            return;
-        }
-        console.log('Command output:', stdout);
-    });
+    exec(command);
 }
 
 // kill firefox, java and gradle

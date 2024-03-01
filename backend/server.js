@@ -54,14 +54,17 @@ function runCommand() {
 }
 
 // kill firefox, java and gradle
-const killCommand = 'pkill firefox && pkill java  pkill geckodriver ';
+// const killCommand = 'pkill firefox && pkill java  pkill geckodriver ';
+const killCommand = ['pkill firefox', 'pkill java', 'pkill geckodriver'];
 function exitCommand() {
-    exec(killCommand, (err, stdout, stderr) => {
-        if (err) {
-            console.error('Error executing command:', err);
-            return;
-        }
-        console.log('Command output:', stdout);
+    killCommand.forEach((command) => {
+        exec(command, (err, stdout, stderr) => {
+            if (err) {
+                console.error('Error executing command:', err);
+                return;
+            }
+            console.log('Command output:', stdout);
+        });
     });
 }
 

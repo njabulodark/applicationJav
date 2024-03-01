@@ -1,40 +1,40 @@
 # Ignore Gradle project-specific cache directory
-.gradle
+/application/.gradle
 
 # Ignore Gradle build output directory
 build
 
 # Ignore IntelliJ project-specific files
-.vscode
+/application/.vscode
 
-/app/build
+/application/app/build
 
 # Ignore Gradle npm cache directory
-/aviation_web/node_modules
+/frontend/node_modules
 /backend/node_modules
 
 # dependencies
-/aviation_web/node_modules
-/aviation_web/.pnp
-/aviation_web/.pnp.js
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.js
 
 # testing
-/aviation_web/coverage
+/frontend/coverage
 
 # production
-/aviation_web/build
+/frontend/build
 
 # misc
-/aviation_web/.DS_Store
-/aviation_web/.env.local
-/aviation_web/.env.development.local
-/aviation_web/.env.test.local
-/aviation_web/.env.production.local
+/frontend/.DS_Store
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
 
-/aviation_web/npm-debug.log*
-/aviation_web/yarn-debug.log*
-/aviation_web/yarn-error.log*
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
 
 # Ignore the file java_pid2232.hprof, which can appear when IntelliJ crashes
-java_pid*.hprof
+/application/java_pid*.hprof
 

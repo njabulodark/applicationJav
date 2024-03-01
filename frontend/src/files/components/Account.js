@@ -62,6 +62,7 @@ export default function Account() {
     const [ odds, setOdds] = useState("loading");
     const [ betting, setBetting] = useState(false);
     const [ balance, setBalance] = useState(0);
+    var intervalID = null;
     const host = "http://102.37.33.157";
     // 172.174.153.102
 
@@ -118,15 +119,13 @@ export default function Account() {
     }
 
     const updateData = () => {
-        setTimeout(() => {
-            getBalance();
-            getOdds();
-        }, 6000);
-    }
-
-    if (betting) {
-        updateData();
-    }
+        getBalance();
+        getOdds();
+        console.log("updating data");
+        clearInterval(intervalID);
+    };
+    
+    
     
     const submition = async (e) => {
         e.preventDefault();
@@ -137,7 +136,18 @@ export default function Account() {
             setBetting(true);
             getOdds();
             getBalance();
+
+            intervalID = setInterval(() => {
+                updateData();
+            }, 6000);
+
         }, 5000);
+    }
+
+    const subExit = async (e) => {
+        e.preventDefault();
+        setBetting(false);
+        axios.get(host+":8081/api/exit");
     }
 
     const getOdds = async () => {
@@ -149,7 +159,7 @@ export default function Account() {
                             const oddss = JSON.parse(response.data.userResult[0].oddsList);
                             // reverse the array
                             oddss.bets.reverse();
-                            setOdds(oddss.bets.reverse());
+                            setOdds(oddss.bets);
                         } catch (error) {
                             // console.log(error);
                         }
@@ -300,11 +310,11 @@ export default function Account() {
                             save
                         </button>
                     </div>
-                    <div className="col-md-6 mx-auto text-center">
+                    {!betting &&<div className="col-md-6 mx-auto text-center">
                         <button type="submit" className="btn btn-primary btn-block text-lg mx-auto" onClick={submition}>
                         Place Bet
                         </button>
-                    </div>
+                    </div>}
                     </form>
 
                     {betting &&  <div className='container'>
@@ -315,7 +325,7 @@ export default function Account() {
                         <div className="row my-3">
                             <ul className="list-group list-group-horizontal-sm" style={{overflowX: 'scroll', overflowY: 'hidden'}}>
                                 {(odds !== "loading")? 
-                                    (odds.map((odd, index) => {
+                                    (odds.reverse().map((odd, index) => {
                                         const coloring = parseFloat(odd) > 2 ? parseFloat(odd) < 10 ? '#643e94': 'rgb(192, 23, 180)' : 'rgb(52, 180, 255)';
                                         return <li className="list-group-item fw-bold text-mx-centre" style={{color: coloring, backgroundColor: '#000000', borderRadius: '10px', margin: '2px'}} key={index}> {odd} </li>
                                     })): 
@@ -329,6 +339,11 @@ export default function Account() {
                         <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontSize: '40px', fontStyle: 'oblique'}}>
                             <b>Balance: </b>{balance}
                         </div>
+                    </div>}
+                    {betting &&<div className="col-md-6 mx-auto text-center">
+                        <button type="submit" className="btn btn-primary btn-block text-lg mx-auto" onClick={subExit}>
+                        Exit Bet
+                        </button>
                     </div>}
 
                     </div>

@@ -66,7 +66,6 @@ export default function Login() {
         if (userId) {
             localStorage.setItem("userId", userId);
             SetLoginMessage("Logging in, your are being redirected to the home page.....");
-            console.log("Id: ", localStorage.getItem("userId"));
             setTimeout(()=>{
               navigate("/account");
             }, 5000);

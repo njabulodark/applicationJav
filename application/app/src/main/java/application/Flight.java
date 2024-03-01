@@ -12,7 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.w3c.dom.css.Counter;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.BufferedReader;
@@ -97,7 +97,7 @@ public class Flight {
         // make driver wait for 2 seconds before executing another instruction
 
         FirefoxOptions options = new FirefoxOptions();
-        // options.addArguments("--headless");
+        options.addArguments("--headless");
 
         this.driver = new FirefoxDriver( options );
         this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -364,9 +364,25 @@ public class Flight {
         CalcFreq();
         
         System.out.println("Initial balance: " + balance);
+        int count = 0;
         
         
         while (true) {
+            if (count > 20) {
+                // clean ram with Process
+                try {
+                    Process process = Runtime.getRuntime().exec("free -h && sudo sysctl -w vm.drop_caches=3 && sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches && free -h\r\n");
+                    process.waitFor();
+                    if (process.exitValue() == 0) {
+                        System.out.println("RAM cleared.");
+                    } else {
+                        System.out.println("Failed to clear RAM.");
+                    }
+                    count = 0;
+                } catch (Exception e) {
+                    // e.printStackTrace();
+                }    
+            }
             // dataCollection();
             sendData();
             sendAmount( balance + "");
@@ -395,6 +411,7 @@ public class Flight {
                 // make a bet
                 trade++;
                 System.out.println("Traded");
+                System.out.println("Number of trades: "+trade);
 
                 String results = "";
                 
@@ -420,6 +437,7 @@ public class Flight {
                 System.out.println("Traded");
                 sendAmount( balance + "");
                 System.out.println("Balance: "+balance);
+                System.out.println("Number of trades: "+trade);
 
                 String results = "";
 

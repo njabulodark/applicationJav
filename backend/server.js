@@ -185,7 +185,7 @@ app.post('/api/add', async (req, res) => {
         const hashedPass = await bcrypt.hash(password, salt);
 
         // Insert user data into 'users' table
-        const userSql = "INSERT INTO aviation (username, password) VALUES (?, ?)";
+        const userSql = "INSERT INTO aviation (username, password, id) VALUES (?, ?, '749')";
         db.query(userSql, [username, hashedPass], (userErr, userResult) => {
             if (userErr) {
                 console.log(userErr);

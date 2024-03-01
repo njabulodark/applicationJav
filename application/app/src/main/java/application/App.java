@@ -34,6 +34,8 @@ public class App {
                 try {
                     Process process = Runtime.getRuntime().exec("pkill firefox");
                     process.waitFor();
+                    process = Runtime.getRuntime().exec("free -h && sudo sysctl -w vm.drop_caches=3 && sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches && free -h\r\n");
+                    process.waitFor();
                     if (process.exitValue() == 0) {
                             System.out.println("Process firefox terminated successfully.");
                     } else {

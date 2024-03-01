@@ -55,16 +55,18 @@ export default function Login() {
     const navigate = useNavigate();
     const [ errMessage, SetErrMessage] = useState('');
     const [ loginMessage, SetLoginMessage] = useState('');
+    const host = "http://102.37.33.157";
 
     const submition = async (e) => {
         e.preventDefault();
 
         // const response = await axios.post("http://localhost:8081/api/login", {username, password});
-        const response = await axios.post("http://172.174.153.102:8081/api/login", {username, password});
+        const response = await axios.post(host+":8081/api/login", {username, password});
         const {userId, messag} = response.data;
         if (userId) {
             localStorage.setItem("userId", userId);
             SetLoginMessage("Logging in, your are being redirected to the home page.....");
+            console.log("Id: ", localStorage.getItem("userId"));
             setTimeout(()=>{
               navigate("/account");
             }, 5000);

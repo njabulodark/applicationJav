@@ -54,7 +54,7 @@ function runCommand() {
 }
 
 // kill firefox, java and gradle
-const killCommand = 'killall firefox && killall java && killall gradle';
+const killCommand = 'pkill firefox && pkill java  pkill geckodriver ';
 function exitCommand() {
     exec(killCommand, (err, stdout, stderr) => {
         if (err) {
@@ -79,7 +79,7 @@ app.get('/api/exit', (req, res) => {
 
 // cancel firefox using command
 app.get('/api/kill', (req, res) => {
-    exec('killall firefox', (err, stdout, stderr) => {
+    exec('pkill firefox', (err, stdout, stderr) => {
         if (err) {
             console.error('Error executing command:', err);
             return;

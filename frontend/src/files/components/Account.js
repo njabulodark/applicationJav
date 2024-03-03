@@ -62,6 +62,7 @@ export default function Account() {
     const [ odds, setOdds] = useState("loading");
     const [ betting, setBetting] = useState(false);
     const [ balance, setBalance] = useState(0);
+    const [ betTime, setBetTime] = useState(0);
     var intervalID = null;
     const host = "http://102.37.33.157";
     // 172.174.153.102
@@ -72,6 +73,17 @@ export default function Account() {
         .then((response) => {
             if (response.data.userResult) {
                 setBalance(response.data.userResult[0].balance);
+            }
+        });
+
+    }
+
+    const getBetTime = async () => {
+        // await axios.post("http://localhost:8081/api/balance", {"id": localStorage.getItem("userId")})
+        await axios.post(host+":8081/api/betTime", {"id": localStorage.getItem("userId")})
+        .then((response) => {
+            if (response.data.userResult) {
+                setBetTime(response.data.userResult[0].betTime);
             }
         });
 
@@ -119,6 +131,7 @@ export default function Account() {
     }
 
     const updateData = () => {
+        getBetTime();
         getBalance();
         getOdds();
     };
@@ -360,6 +373,9 @@ export default function Account() {
                                     )
                                 }
                             </ul>
+                        </div>
+                        <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontStyle: 'oblique'}}>
+                            <b>Last bet time: </b>{betTime}
                         </div>
                         <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontSize: '40px', fontStyle: 'oblique'}}>
                             <b>Balance: </b>{balance}

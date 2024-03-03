@@ -275,6 +275,42 @@ public class Flight {
         }
     }
     
+    public void sendBetTime() {
+        try {
+            URL url = new URL(host+":8081/api/updateBetTime");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // get current time in hours:minutes:seconds format
+            String time = java.time.LocalTime.now().toString();
+
+
+            JSONObject input = new JSONObject();
+            input.put("betTime", time); // Insert the odds here
+
+            String inputString = input.toString();
+
+            conn.getOutputStream().write(inputString.getBytes("UTF-8"));
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP Error code : " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String output;
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+                break;
+            }
+
+            conn.disconnect();
+        } catch (Exception e) {
+            System.out.println("Exception in NetClientGet:- " + e);
+        }
+    }
+    
     public void sendAmount( String balance) {
         try {
             URL url = new URL(host+":8081/api/updateBalance");
@@ -325,6 +361,31 @@ public class Flight {
         }
     }
 
+    public void CalcFirstFreq() {
+        // calculate frequency using the odds list
+        int length = this.odds.size();
+        
+        for (int i = 0; i < length-1; i++) {
+            if (i +1 == length) {
+                break;
+            }
+
+            float odd = Float.parseFloat(this.odds.get(i).substring(0, this.odds.get(i).length()-1 ));
+            float nextOdd = Float.parseFloat(this.odds.get(i+1).substring(0, this.odds.get(i+1).length()-1 ));
+            if (odd >= 2 && nextOdd >= 2) {
+                this.frequentBets++;
+                System.out.println("Frequent bets from firstCalculation: "+this.frequentBets);
+            } else if (odd >= 2 && nextOdd < 2) {
+                this.frequentBets--;
+                System.out.println("Frequent bets from firstCalculation: "+this.frequentBets);
+            } else if (odd < 0) {
+                this.frequentBets = 0;
+            }
+            
+            
+        }
+    }
+
     public String updateData() {
         int length = this.odds.size();
         String odd = c.getTextXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[1]/app-stats-widget/div/div[1]/div/app-bubble-multiplier[1]/div");
@@ -362,13 +423,17 @@ public class Flight {
         int length = this.odds.size();
         int trade = 0;
         dataCollection();
+        CalcFirstFreq();
         CalcFreq();
+
+        System.out.println("Startup Frequency: " + this.frequentBets);
         
         System.out.println("Initial balance: " + balance);
         int count = 0;
         
         
         while (true) {
+            // clean ram every 20 runs
             if (count > 20) {
                 // clean ram with Process
                 try {
@@ -386,6 +451,7 @@ public class Flight {
             }
             // dataCollection();
             sendData();
+            sendBetTime();
             sendAmount( balance + "");
             length = this.odds.size();
 
@@ -439,6 +505,7 @@ public class Flight {
                 // make a bet
                 trade++;
                 System.out.println("Traded");
+                balance = Float.parseFloat(c.getTextXpath("//span[contains(@class, 'amount')]"));
                 // sendAmount( balance + "");
                 // System.out.println("Balance: "+balance);
                 // System.out.println("Number of trades: "+trade);

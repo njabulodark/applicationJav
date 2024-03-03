@@ -645,7 +645,26 @@ progress {
   margin-left: auto;
 }
 
-@media (min-width: 576px) {
+@media screen and (max-width: 480px) {
+  .odds {
+    max-height: 200px !important;
+    overflow-y: scroll !important;
+  }
+}
+@media screen and (max-width: 576px) {
+  .odds {
+    max-height: 200px !important;
+    overflow-y: scroll !important;
+  }
+}
+@media screen and (max-width: 576px) {
+  .odds {
+    max-height: 200px !important;
+    overflow-y: scroll !important;
+  }
+}
+
+@media (min-width: 768px) {
   .container-sm, .container {
     max-width: 540px;
   }
@@ -655,6 +674,7 @@ progress {
   .container-md, .container-sm, .container {
     max-width: 720px;
   }
+
 }
 @media (min-width: 992px) {
   .container-lg, .container-md, .container-sm, .container {

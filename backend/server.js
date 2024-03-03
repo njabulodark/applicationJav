@@ -44,23 +44,20 @@ const command = 'cd /home/njabulo/applicationJav/application && gradle run';
 
 // Function to run the command and keep it running
 function runCommand() {
-    exec(command);
+    exec(command, (err, stdout, stderr) => {
+        if (err) {
+            console.error('Error executing command:', err);
+            return;
+        }
+        console.log('Command output:', stdout);
+        console.log('command stderr:', stderr)
+    });
 }
 
 // kill firefox, java and gradle
 // const killCommand = 'pkill firefox && pkill java  pkill geckodriver ';
 const killCommand = ['pkill firefox', 'pkill java', 'pkill geckodriver'];
-function exitCommand() {
-    killCommand.forEach((command) => {
-        exec(command, (err, stdout, stderr) => {
-            if (err) {
-                console.error('Error executing command:', err);
-                return;
-            }
-            console.log('Command output:', stdout);
-        });
-    });
-}
+
 
 // Route to trigger the command execution
 app.get('/api/terminal', (req, res) => {
@@ -88,6 +85,24 @@ app.get('/api/kill', (req, res) => {
 
 
 // get
+app.get('/api/get', (req, res) => {
+    db.query("SELECT * FROM aviation", (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+}
+);
+
+app.get('/api/get1', (req, res) => {
+    let a= 0;
+    for (let i=0; i<5; i++);
+    console.log(a);
+}
+);
+
 app.get('/api/get', (req, res) => {
     db.query("SELECT * FROM aviation", (err, result) => {
         if (err) {

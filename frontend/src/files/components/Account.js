@@ -121,8 +121,6 @@ export default function Account() {
     const updateData = () => {
         getBalance();
         getOdds();
-        console.log("updating data");
-        clearInterval(intervalID);
     };
     
     
@@ -135,20 +133,46 @@ export default function Account() {
 
         setTimeout(() => {
             setBetting(true);
+            localStorage.setItem("bettingState", true);
+            console.log("submitted")
             getOdds();
             getBalance();
-
-            intervalID = setInterval(() => {
-                updateData();
-            }, 6000);
 
         }, 5000);
     }
 
+    const intervalTime = 6000; // 6 seconds in milliseconds
+
+    const updateDataAndSetInterval = () => {
+        updateData(); // Run the update immediately
+        console.log("updating data");
+
+        // Set interval to run updateData every 6 seconds
+        setInterval(() => {
+            try {
+                if (localStorage.getItem("bettingState") === "true") {
+                    setBetting(true);
+                    updateData();
+                    console.log("updating data");
+                } else {
+                    setBetting(false);
+                    console.log("betting: ", betting);
+                    console.log("betting state is: ", localStorage.getItem("bettingState"));
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }, intervalTime);
+    };
+    
+
+
     const subExit = async (e) => {
         e.preventDefault();
         setBetting(false);
+        localStorage.setItem("bettingState", false);
         axios.get(host+":8081/api/exit");
+
     }
 
     const getOdds = async () => {
@@ -159,7 +183,6 @@ export default function Account() {
                         try {
                             const oddss = JSON.parse(response.data.userResult[0].oddsList);
                             // reverse the array
-                            oddss.bets.reverse();
                             setOdds(oddss.bets);
                         } catch (error) {
                             // console.log(error);
@@ -200,6 +223,7 @@ export default function Account() {
         } 
 
         getAccount();
+        updateDataAndSetInterval();
 
     }, []);
 
@@ -324,7 +348,7 @@ export default function Account() {
                             <hr />
                         </div>
                         <div className="row my-3">
-                            <ul className="list-group list-group-horizontal-sm" style={{overflowX: 'scroll', overflowY: 'hidden'}}>
+                            <ul className="odds list-group list-group-horizontal-sm" style={{overflowX: 'scroll', overflowY: 'hidden'}}>
                                 {(odds !== "loading")? 
                                     (odds.reverse().map((odd, index) => {
                                         const coloring = parseFloat(odd) > 2 ? parseFloat(odd) < 10 ? '#643e94': 'rgb(192, 23, 180)' : 'rgb(52, 180, 255)';

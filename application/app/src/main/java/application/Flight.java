@@ -407,58 +407,62 @@ public class Flight {
 
             if (this.frequentBets > 3 && secondLastOdd >= 2 && !lastOdString.equals(odd)) {
                 // click bet
-                // c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
+                c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
 
                 // make a bet
                 trade++;
                 System.out.println("Traded");
                 System.out.println("Number of trades: "+trade);
 
-                String results = "";
+                balance = Float.parseFloat(c.getTextXpath("//span[contains(@class, 'amount')]"));
+
+
+                // String results = "";
                 
-                do {
-                    results = updateData();
-                    if (results.equals("Increased")) {
-                        balance = balance + 1;
-                    } else if (results.equals("Decreased")) {
-                        balance = balance - 1;
-                    } else if (results.equals("No change")) {
-                        continue;
-                    }
-                    System.out.println("Balance: "+balance);
-                } while (results.equals("No change"));
+                // do {
+                //     results = updateData();
+                //     if (results.equals("Increased")) {
+                //         balance = balance + 1;
+                //     } else if (results.equals("Decreased")) {
+                //         balance = balance - 1;
+                //     } else if (results.equals("No change")) {
+                //         continue;
+                //     }
+                //     System.out.println("Balance: "+balance);
+                // } while (results.equals("No change"));
                 
             
             } else if (this.frequentBets > 1 && lastOdd < 2 && secondLastOdd >= 2 && !lastOdString.equals(odd)) {
                 // click bet
-                // c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
+                c.clickXpath("/html/body/app-root/app-game/div/div[1]/div[2]/div/div[2]/div[3]/app-bet-controls/div/app-bet-control[1]/div/div[1]/div[2]/button");
                 
                 // make a bet
                 trade++;
                 System.out.println("Traded");
-                sendAmount( balance + "");
-                System.out.println("Balance: "+balance);
-                System.out.println("Number of trades: "+trade);
+                // sendAmount( balance + "");
+                // System.out.println("Balance: "+balance);
+                // System.out.println("Number of trades: "+trade);
 
-                String results = "";
+                // String results = "";
 
-                do {
-                    results = updateData();
-                    if (results.equals("Increased")) {
-                        balance = balance + 1;
-                    } else if (results.equals("Decreased")) {
-                        balance = balance - 1;
-                    } else if (results.equals("No change")) {
-                        continue;
-                    }
-                    System.out.println("Balance: "+balance);
-                } while (results.equals("No change"));
+                // do {
+                //     results = updateData();
+                //     if (results.equals("Increased")) {
+                //         balance = balance + 1;
+                //     } else if (results.equals("Decreased")) {
+                //         balance = balance - 1;
+                //     } else if (results.equals("No change")) {
+                //         continue;
+                //     }
+                //     System.out.println("Balance: "+balance);
+                // } while (results.equals("No change"));
             }
             
             
             if (!odd.equals("")) {
                 this.odds.add(odd);
             }
+            sendAmount(balance +"");
             CalcFreq();
             System.out.println("new frequence: "+this.frequentBets);
             clean();

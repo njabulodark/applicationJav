@@ -63,6 +63,7 @@ export default function Account() {
     const [ betting, setBetting] = useState(false);
     const [ balance, setBalance] = useState(0);
     const [ betTime, setBetTime] = useState(0);
+    const [ status, setStatus] = useState('');
     var intervalID = null;
     const host = "http://102.37.33.157";
     // 172.174.153.102
@@ -88,7 +89,17 @@ export default function Account() {
         });
 
     }
-    
+
+    const getStatus = async () => {
+        // await axios.post("http://localhost:8081/api/balance", {"id": localStorage.getItem("userId")})
+        await axios.post(host+":8081/api/status", {"id": localStorage.getItem("userId")})
+        .then((response) => {
+            if (response.data.userResult) {
+                setStatus(response.data.userResult[0].status);
+            }
+        });
+
+    }
 
     const subUserName = async (e) => {
         e.preventDefault();
@@ -134,6 +145,7 @@ export default function Account() {
         getBetTime();
         getBalance();
         getOdds();
+        getStatus();
     };
     
     
@@ -376,6 +388,9 @@ export default function Account() {
                         </div>
                         <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontStyle: 'oblique'}}>
                             <b>Last bet time: </b>{betTime}
+                        </div>
+                        <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontStyle: 'oblique'}}>
+                            <b>Program status: </b>{status}
                         </div>
                         <div className='m-2 col-auto text-bg-centre' style={{textAlign: 'right', fontSize: '40px', fontStyle: 'oblique'}}>
                             <b>Balance: </b>{balance}

@@ -60,6 +60,7 @@ public class Flight {
     private String password;
     private int bet_amount;
     private int x_amount;
+    private float initBalance;
     public boolean failure = false;
     private String host = "http://102.37.33.157";
 
@@ -311,6 +312,42 @@ public class Flight {
         }
     }
     
+    public void sendStatus(String status) {
+        try {
+            URL url = new URL(host+":8081/api/updateStatus");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // get current time in hours:minutes:seconds format
+            String time = java.time.LocalTime.now().toString();
+
+
+            JSONObject input = new JSONObject();
+            input.put("status", status); // Insert the odds here
+
+            String inputString = input.toString();
+
+            conn.getOutputStream().write(inputString.getBytes("UTF-8"));
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP Error code : " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String output;
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+                break;
+            }
+
+            conn.disconnect();
+        } catch (Exception e) {
+            System.out.println("Exception in NetClientGet:- " + e);
+        }
+    }
+    
     public void sendAmount( String balance) {
         try {
             URL url = new URL(host+":8081/api/updateBalance");
@@ -418,8 +455,13 @@ public class Flight {
         }
     }
 
+    public void setInitBalance() {
+        this.initBalance = Float.parseFloat(c.getTextXpath("//span[contains(@class, 'amount')]"));
+    }
+
     public void bet() {
         float balance = Float.parseFloat(c.getTextXpath("//span[contains(@class, 'amount')]"));
+        setInitBalance();
         int length = this.odds.size();
         int trade = 0;
         dataCollection();
@@ -448,6 +490,18 @@ public class Flight {
                 } catch (Exception e) {
                     // e.printStackTrace();
                 }    
+            }
+
+            if (balance >= this.initBalance + 25) {
+                this.driver.close();
+                break;
+            }
+
+            // if current time is between 04:00 and 05:00, stop betting
+            String time = java.time.LocalTime.now().toString();
+            if (time.compareTo("04:00:00") > 0 && time.compareTo("05:00:00") < 0) {
+                this.driver.close();
+                break;
             }
             // dataCollection();
             sendData();
@@ -546,17 +600,24 @@ public class Flight {
 
     public void run() {
         System.out.println("Getting data...");
+        sendStatus("Getting data...");
         getData();
         System.out.println("Logging in...");
+        sendStatus("Logging in...");
         login();
         System.out.println("Logged in");
+        sendStatus("Logged in");
         System.out.println("Starting aviation ...");
+        sendStatus("Starting aviation...");
         if (aviation()) {
             System.out.println("Aviation started ....");
+            sendStatus("Aviation started ....");
             System.out.println("Data Collection started....");
             dataCollection();
             System.out.println("betting started....");
+            sendStatus("betting started....");
             bet();
+            sendStatus("betting done....");
             System.out.println("betting done....");
             this.failure = false;
 

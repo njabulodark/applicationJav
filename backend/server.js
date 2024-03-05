@@ -30,7 +30,7 @@ const db = mysql.createConnection({
 
 
 app.get('/api/design', (req, res) => {
-    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) , av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json, Balance FLOAT, betTime VARCHAR(35))", (err, result) => {
+    db.query("CREATE TABLE IF NOT EXISTS aviation (id INT(5) UNSIGNED AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, username VARCHAR(100) NOT NULL, password VARCHAR(255), av_username VARCHAR(100) , av_password VARCHAR(255), bet_amount INT(6), x_amount INT(6), oddsList Json, Balance FLOAT, betTime VARCHAR(35), status Text)", (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -67,7 +67,15 @@ app.get('/api/terminal', (req, res) => {
 
 // Route to trigger the command execution
 app.get('/api/exit', (req, res) => {
-    exitCommand();
+    killCommand.forEach((command) => {
+        exec(command, (err, stdout, stderr) => {
+            if (err) {
+                console.error('Error executing command:', err);
+                return;
+            }
+            console.log('Command output:', stdout);
+        });
+    });
     res.send('Command started');
 });
 
@@ -205,6 +213,25 @@ app.post('/api/betTime', async (req, res) => {
     }
 });
 
+// get status
+app.post('/api/status', async (req, res) => {
+    try {
+        const { id } = req.body;
+        const sql = `SELECT status FROM aviation WHERE id = ?`;
+        db.query(sql, [id], (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                return res.json({ success: true, userResult });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // update balance
 app.post('/api/updateBalance', async (req, res) => {
     try {
@@ -225,6 +252,25 @@ app.post('/api/updateBalance', async (req, res) => {
 });
 
 // update balance
+app.post('/api/updateStatus', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const sql = `Update aviation SET status = ? WHERE id = '749'`;
+        db.query(sql, [status], (userErr, userResult) => {
+            if (userErr) {
+                console.log(userErr);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                return res.json({ success: true, userResult });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// update Bet Time
 app.post('/api/updateBetTime', async (req, res) => {
     try {
         const { betTime} = req.body;

@@ -41,6 +41,9 @@ dependencies {
     implementation group: 'javax.json', name: 'javax.json-api', version: '1.+'
 
     implementation 'org.json:json:20201115'
+
+    // mangoDB
+    implementation 'org.mongodb:mongodb-driver-sync:5.0.0'
 }
 
 application {

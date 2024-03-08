@@ -6,6 +6,8 @@ import java.util.Properties;
 
 // import application.Universities.Cao;
 import application.Universities.Nwu;
+import application.Universities.Tut;
+import application.*;
 
 public class App {
     public String getGreeting() {
@@ -16,8 +18,11 @@ public class App {
         // Cao cao = new Cao();
         // cao.run();
 
-        Nwu nwu = new Nwu();
-        nwu.run();
+        // Nwu nwu = new Nwu();
+        // nwu.run();
         // System.out.println( cao.application() );
+
+        Tut tut = new Tut();
+        tut.run();
     }
 }

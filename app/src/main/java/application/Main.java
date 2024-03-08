@@ -6,7 +6,6 @@ import application.Universities.Uj;
 import application.Universities.Uct;
 import application.Universities.Uwc;
 import application.Universities.Ufs;
-import application.Universities.Flight;
 
 public class Main {
     public static void main(String[] args) {
@@ -32,9 +31,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Flight flight = new Flight();
-        flight.run();
 
         // Ufs ufs = new Ufs();
         // ufs.run();
